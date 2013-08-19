@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <link href="../stylesheet.css" rel="stylesheet" type="text/css"/>
+    <script src="../script.js" type="text/javascript"></script>
+    <title>Controlling Power to Other Devices</title>
+  </head>
+  <body>
+    <div id="main">
+      <p id="abstract">Written by <a href="mailto:adgleave AT gmail DOT com">Adam Gleave</a>.</p>
+
+      <div class="long-tutorial-text">
+      <h1>Introduction</h1>
+        <p>There are a number of situations where you might need to turn an electrical component on or off using the Raspberry Pi. For example:
+        </p>
+        <ul>
+            <li>Home automation</li>
+            <li>Turning power-hungry peripherals off when not in use</li>
+            <li>Controlling a <a href="http://makezine.com/2013/06/19/how-to-text-your-coffeemaker/">coffee machine</a></li>
+        </ul>
+        <p>This tutorial describes an easy to make design suitable for switching a low voltage, moderate current device using one of the Pi's <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/cheat_sheet/">GPIO</a> pins.</p>
+      <h1>When should you use this?</h1>
+        <p>The design described here can be used in many projects, but is not suitable for every scenario. In particular, it <strong>must not</strong> be used to control high voltages, such as mains electricity. It is possible to adapt the design to cover this case, however this should only be undertaken by those with considerable experience, as it involves working with potentially <strong>lethal</strong> voltages. I would recommend using a device such as the <a href="http://www.powerswitchtail.com/Pages/PSTKKit.aspx">PowerSwitch Tail</a> if you need to work with mains voltages.</p>
+        <p>If you need to control a DC motor, then it is usually better to use <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/robot_control/">servos</a>, which provide a finer degree of control.</p>
+        <p>Devices which can operate at a 3.3 V supply level may be connected directly to a GPIO pin, provided their power consumption is not too high. The Pi can supply <a href="http://elinux.org/RPi_Low-level_peripherals#General_Purpose_Input.2FOutput_.28GPIO.29">up to 16 mA current over GPIO</a>, making it possible to <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/morse_code/">control LEDs</a> directly from GPIO.</p>
+        <p>Otherwise, read on, and learn how to make the circuit!</p>
+      <h1>Design</h1>
+      <h2>Schematic</h2>
+      <div>
+        <img src="Power Control Schematic.png"/>
+      </div>
+      <h2>Equipment List</h2>
+        <ul>
+            <li>
+                <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/5411736/">IRF5305PBF</a>: A power p-channel MOSFET. Alternatives: <a href="http://uk.rs-online.com/web/p/mosfet-transistors/6504485/">IRLIB9343pbF</a>.</p>
+
+                <p>The key criteria to look for is a low drain-source resistance. This keeps power dissipation low, avoiding needing to mount a heat sink.</p>
+
+                <p>A low resistance also prevents too great a potential difference across the MOSFET. For example, if the resistance were as much as 1 Ohm, then a current draw of just 500 mA would cause a voltage drop of 0.5 V. If we were intending to supply a regulated 5 V supply, this would mean the actual output would only be 4.5 V, low enough to cause some devices to malfunction.</p>
+
+                <p>The recommended transistor has a resistance of only 0.093 Ohm, so it would take over a 10 A current draw to cause a voltage drop of just 0.1 V. This is more than enough for most applications!</p>
+            </li>
+            <li>
+                <p><a href="http://uk.rs-online.com/web/p/bipolar-transistors/0295905/">2N3704</a>: A typical NPN amplifier. Alternatives: <a href="http://uk.rs-online.com/web/p/bipolar-transistors/5452232/">BC547</a>. Almost any other NPN BJT transistor should also work.</p>
+            </li>
+            <li>Two resistors. The exact values are not too important. However, the resistor connected to the base of the NPN transistor should be around 10 times that of the one connected to the supply input.</li>
+        </ul>
+      <h2>Description</h2>
+          <p>A p-channel MOSFET may be used as a digital switch. It has three terminals (shown on the schematic): gate (G), source (S) and drain (D). When gate and source are at the same voltage, the MOSFET is open (turned off) and no current flow is allowed between source and drain. When the gate voltage is significantly below that of source, the MOSFET is closed (turned on) and current can flow from source to drain.</p>
+          <p>The Pi's GPIO pins have 3.3 V as their high voltage. If the supply we were switching was also 3.3 V, it would be possible to connect one of the Pi's GPIO pins (in the schematic labelled Sw_3V3) directly to the gate of the MOSFET. However, this does not work for other voltages. Consider, for example, switching a 5 V supply. When the Pi supplies 3.3 V to the gate, it would be significantly below the 5 V source, and so the MOSFET would be permanently open!</p>
+          <p>To control the MOSFET from the Pi, it is necessary to use an NPN transistor as a <em>voltage amplifier</em>. The GPIO pin is connected to the base of the NPN amplifier. When the Pi pulls the base to ground, no current flows, so the NPN transistor is open. The gate of the MOSFET is pulled up to VCC through the resistor R2. This makes the MOSFET open.</p>
+          <p>When the Pi pulls the pin up to 3.3 V, current flows through R1. R1 limits the amount of current so as to not overload the Pi's GPIO pin. The NPN transistor allows a larger current to flow, with the gain depending on the particular transistor used. This pulls the gate to ground, with the resistor R2 preventing a short between VCC and ground. The MOSFET is then closed.</p>
+          <p>The end result is that when the Pi gives a low input, no power supply is provided. When the Pi gives a high input, power is turned on.</p>
+      <h1>How to Build It</h1>
+      <h1>Testing</h1>
+      </div>
+
+    <hr/>
+    <p>&copy; 2013 Adam Gleave</p>
+    <p>All code licensed under the <a href="LICENSE">MIT license</a>.</p>
+    <p>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
+            <img alt="Creative Commons Licence"
+                 style="border-width:0"
+                 src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+        </a>
+        Tutorial is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+      
+    </div>
+  </body>
+
+</html>
