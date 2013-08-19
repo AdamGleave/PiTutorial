@@ -27,14 +27,14 @@
       <h1>Design</h1>
       <h2>Schematic</h2>
       <div>
-        <img src="Power Control Schematic.png"/>
+        <img class="centre" src="img/Power Control Schematic.png"/>
       </div>
       <h2>Equipment List</h2>
       <h3>Circuit</h3>
       These components are required to implement the circuit:
         <ul>
             <li>
-                <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/5411736/">IRF5305PBF</a>: A power p-channel MOSFET. Alternatives: <a href="http://uk.rs-online.com/web/p/mosfet-transistors/6504485/">IRLIB9343pbF</a>.</p>
+                <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/5411736/">IRF5305PBF</a> (<a href="http://www.irf.com/product-info/datasheets/data/irf5305pbf.pdf">Datasheet</a>.) A power p-channel MOSFET. Alternatives: <a href="http://uk.rs-online.com/web/p/mosfet-transistors/6504485/">IRLIB9343pbF</a>.</p>
 
                 <p>The key criteria to look for is a low drain-source resistance. This keeps power dissipation low, avoiding needing to mount a heat sink.</p>
 
@@ -43,10 +43,9 @@
                 <p>The recommended transistor has a resistance of only 0.093 Ohm, so it would take over a 10 A current draw to cause a voltage drop of just 0.1 V. This is more than enough for most applications!</p>
             </li>
             <li>
-                <p><a href="http://uk.rs-online.com/web/p/bipolar-transistors/0295905/">2N3704</a>: A typical NPN amplifier. Alternatives: <a href="http://uk.rs-online.com/web/p/bipolar-transistors/5452232/">BC547</a>. Almost any other NPN BJT transistor should also work.</p>
+                <p><a href="http://uk.rs-online.com/web/p/bipolar-transistors/0295905/">2N3704</a> (<a href="www.futurlec.com/Datasheet/Transistor/2N3704.pdf">Datasheet</a>.) A typical NPN amplifier. Alternatives: <a href="http://uk.rs-online.com/web/p/bipolar-transistors/5452232/">BC547</a>. Almost any other NPN BJT transistor should also work.</p>
             </li>
-            <li>Two resistors. The exact values are not too important. However, the resistor connected to the base of the NPN transistor should be around 10 times that of the one connected to the supply input.</li>
-            <li></li>
+            <li>Two resistors. The exact values are not too important. These are in place to prevent too much current being drawn from the Raspberry Pi, and to enable the NPN transistor to pull the collector down to ground.</li>
         </ul>
       <h3>Other components</h3>
       In addition, if you are planning on following the <a href="#howtobuildit">construction instructions</a> in this tutorial then you will need the following equipment:
@@ -63,12 +62,21 @@
           <p>The end result is that when the Pi gives a low input, no power supply is provided. When the Pi gives a high input, power is turned on.</p>
       <h1 id="howtobuildit">How to Build It</h1>
         <p>I will show how to build the circuit using a breadboard: an easy way of prototyping electronics. I would recommend first reading the <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/breadboard/">breadboard tutorial</a> if you have not used one before.</p>
-        <p></p>
-* Connect breakout board
-* Plug in components. Orientation!
+        <div><a href="img/Bare.jpg"><img class="centre" src="img/Bare Scaled.jpg"/></a></div>
+        <p>Start by connecting the breakout board. The two rows of pins on the breakout board should go on either side of the central divide on the breadboard. Make sure that the top pin on the breakout board is connected to row 1 of the breakout board. This will make it easier to tell where connections should be made.</p>
+        <p>Connect GND (pin 11) to the negative (blue, in the picture) rail running along the breakout board.</p>
+        <div><a href="img/Components Labeled.jpg"><img class="centre" src="img/Components Only Scaled.jpg"/></a></div>
+        <p>Connect the NPN transistor and MOSFET. <strong>Be careful</strong> to get the orientation the same as in the picture. The flat edge of the NPN transistor should face the edge, and the metal edge of the MOSFET should face the central divide. You can put the components in facing the opposite way round, but then the pinout will be reversed.</p>
+        <p>I have connected the NPN transistor to rows 25-27, and the MOSFET to rows 35-37. The emittter, collector and base of the NPN amplifier are connected to rows 25, 26 and 27 respectively. The gate, drain and source are connected to rows 35, 36 and 37 respectively.</p>
+        <p>The drain of the MOSFET is the output of the circuit, which I have connected to the positive (red, in the picture) rail running along the breakout board.</p>
+        <div><a href="img/NPN Only.jpg"><img class="centre" src="img/NPN Only Scaled.jpg"/></a></div>
+        <p>Connect the 100 kOhm resistor between the supply voltage and the collector (row 26) of the NPN transistor. Here I am using the Pi's built-in 5 V supply rail (row 13), which is connected directly to the Pi's power supply.</p>
+        <p>Choose a free GPIO pin for the digital output. Here I am using the pin in the first (topmost) row, on the left-hand side of the breakout board. This is BCM pin #7, WiringPi pin #11. Connect this pin to an unused row on the breakout board, here I am using row 18. Then connect row 18 to the base of the NPN transistor (row 27) using the 10 kOhm resistor.</p>
+        <div><a href="img/Complete.jpg"><img class="centre" src="img/Complete Scaled.jpg"/></a></div>
+        <p>Connect the collector (row 26) of the NPN transistor to the gate (row 35) of the MOSFET. Connect the 5 V supply rail (row 13), or your chosen power source, to the source (row 37) of the MOSFET.</p>
+        <p>Congratulations! You've now finished building the circuit.</p>
       <h1>Testing</h1>
       </div>
-
     <hr/>
     <p>&copy; 2013 Adam Gleave</p>
     <p>All code licensed under the <a href="LICENSE">MIT license</a>.</p>
