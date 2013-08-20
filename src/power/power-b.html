@@ -19,7 +19,7 @@
             <li>Controlling a <a href="http://makezine.com/2013/06/19/how-to-text-your-coffeemaker/">coffee machine</a></li>
         </ul>
         <p>This tutorial describes an easy to make design suitable for switching a low voltage, moderate current device using one of the Pi's <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/cheat_sheet/">GPIO</a> pins.</p>
-      <h1>When should you use this?</h1>
+      <h1>When Should You Use This?</h1>
         <p>The design described here can be used in many projects, but is not suitable for every scenario. In particular, it <strong>must not</strong> be used to control high voltages, such as mains electricity. It is possible to adapt the design to cover this case, however this should only be undertaken by those with considerable experience, as it involves working with potentially <strong>lethal</strong> voltages. I would recommend using a device such as the <a href="http://www.powerswitchtail.com/Pages/PSTKKit.aspx">PowerSwitch Tail</a> if you need to work with mains voltages.</p>
         <p>If you need to control a DC motor, then it is usually better to use <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/robot_control/">servos</a>, which provide a finer degree of control.</p>
         <p>Devices which can operate at a 3.3 V supply level may be connected directly to a GPIO pin, provided their power consumption is not too high. The Pi can supply <a href="http://elinux.org/RPi_Low-level_peripherals#General_Purpose_Input.2FOutput_.28GPIO.29">up to 16 mA current over GPIO</a>, making it possible to <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/morse_code/">control LEDs</a> directly from GPIO.</p>
@@ -31,7 +31,7 @@
       </div>
       <h2>Equipment List</h2>
       <h3>Circuit</h3>
-      These components are required to implement the circuit:
+      <p>These components are required to implement the circuit:</p>
         <ul>
             <li>
                 <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/5411736/">IRF5305PBF</a> (<a href="http://www.irf.com/product-info/datasheets/data/irf5305pbf.pdf">Datasheet</a>.) A power p-channel MOSFET. Alternatives: <a href="http://uk.rs-online.com/web/p/mosfet-transistors/6504485/">IRLIB9343pbF</a>.</p>
@@ -48,7 +48,7 @@
             <li>Two resistors. The exact values are not too important. These are in place to prevent too much current being drawn from the Raspberry Pi, and to enable the NPN transistor to pull the collector down to ground.</li>
         </ul>
       <h3>Other components</h3>
-      In addition, if you are planning on following the <a href="#howtobuildit">construction instructions</a> in this tutorial then you will need the following equipment:
+      <p>In addition, if you are planning on following the <a href="#howtobuildit">construction instructions</a> in this tutorial then you will need the following equipment:</p>
       <ul>
         <li><a href="http://proto-pic.co.uk/half-size-breadboard/">Breadboard</a></li>
         <li><a href="http://proto-pic.co.uk/breadboard-jumper-wire-pack/">Jumper wires</a> for breadboard</li>
@@ -75,8 +75,30 @@
         <div><a href="img/Complete.jpg"><img class="centre" src="img/Complete Scaled.jpg"/></a></div>
         <p>Connect the collector (row 26) of the NPN transistor to the gate (row 35) of the MOSFET. Connect the 5 V supply rail (row 13), or your chosen power source, to the source (row 37) of the MOSFET.</p>
         <p>Congratulations! You've now finished building the circuit.</p>
-      <h1>Testing</h1>
-      </div>
+      <h1>Testing and Using the Circuit</h1>
+        <p>To use the circuit, start by connecting the Raspberry to the breakout board using the ribbon cable.</p>
+        <div><a href="img/Ribbon Cable.jpg"><img class="centre" src="img/Ribbon Cable Scaled.jpg"/></a></div>
+        <p>Note there is a small notch in the socket on the breakout board. The ribbon cable will have a corresponding raised bump on both ends of the cable. On the connection to the Raspberry Pi, the bump should face away from the edge (towards the SD card) of the Pi</p>
+        <p>Now, log on to the Pi and open a terminal. Type:</p>
+<pre class=sh>
+$ <kbd>sudo bash</kbd>
+$ <kbd>echo "7" > /sys/class/gpio/export</kbd>
+$ <kbd>echo "out" > /sys/class/gpio/gpio7/direction</kbd>
+$ <kbd>echo "0" > /sys/class/gpio/gpio7/value</kbd>
+</pre>
+        <p>The first line switches the user to root, the administrative user. This is required for the following commands to work. The second line tells the Pi we will be using pin #7, and that it should be made accessible by the filesystem. (If you're using a different GPIO pin, change 7 to the appropriate number.) The third line configures the pin as an output rather than input pin. The last line sets the output to low (0 V), turning <em>off</em> power.</p>
+    <div><a href="img/Multimeter Off.jpg"><img class="centre" src="img/Multimeter Scaled.jpg"/></a></div>
+     <p>Connect the black lead of the multimeter to the ground line (the blue, negative line on my breadboard.) Connect the red lead of the multimeter to the power line (the red, positive line in this example.) Turn the multimeter on, measuring voltage. It should read 0 V.</p>
+      <p>Now, type:</p>
+<pre class=sh>
+$ <kbd>echo "1" > /sys/class/gpio/gpio7/value</kbd>
+</pre>
+      <p>The multimeter should now show the power supply voltage. In my case, it's 5 V.</p>
+    </div>
+    <h1>Next Steps</h1>
+    <p>Now the circuit is working, it is possible to control the power to a variety of different devices. As a simple example, try connecting LEDs (you may need a resistor to lower the voltage).</p>
+    <p>In the above example, we controlled the GPIO pin from a terminal using the <em>shell</em>. You may wish to control the pin (and therefore the power) from a programming language, instead. There are many tutorials online; here is one for <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/cheat_sheet/">Python</a> and for <a href="https://projects.drogon.net/raspberry-pi/wiringpi/">C</a>.</p>
+    <p>Good luck!</p>
     <hr/>
     <p>&copy; 2013 Adam Gleave</p>
     <p>All code licensed under the <a href="LICENSE">MIT license</a>.</p>
@@ -90,5 +112,4 @@
       
     </div>
   </body>
-
 </html>
