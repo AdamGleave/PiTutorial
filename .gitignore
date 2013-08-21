@@ -1,0 +1,7 @@
+Makefile
+private/
+*.html
+!*-b.html
+*~
+*.bak
+*cache.lib

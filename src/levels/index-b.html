@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <link href="../stylesheet.css" rel="stylesheet" type="text/css"/>
+    <script src="../script.js" type="text/javascript"></script>
+    <title>Bidirectional Level Shifting (for I&sup2;C)</title>
+  </head>
+  <body>
+    <div id="main">
+      <p id="abstract">Written by <a href="mailto:adgleave AT gmail DOT com">Adam Gleave</a>.</p>
+
+      <div class="long-tutorial-text">
+      <div class="ucampas-toc"></div>
+      <h1 id="intro">Introduction</h1>
+        <p>The Raspberry Pi uses a 3.3 V <a href="http://www.allaboutcircuits.com/vol_4/chpt_3/10.html">logic level</a> on its <a href="http://pi.gadgetoid.com/pinout">GPIO</a> pins. Some devices use a different logic level. For example, the Arduino's operates at a 5 V logic level. Connecting devices using different logic levels together will not work, and may damage one or both of the devices.</p>
+        <p>To safely and reliably interconnect devices operating at different logic levels, a <em>level shifting</em> circuit is used. This tutorial describes how to design and build such a circuit.</p>
+        <p>This tutorial focuses on the  common use case of level shifting the <a href="http://en.wikipedia.org/wiki/I%C2%B2C">I&sup2;C</a> bus. However, the same basic design can be used for other protocols. Note that because I&sup2;C provides full-duplex communication using a single data line, a <em>bidirectional</em> level shifter is required. That is, the level shifter must allow for communication to take place in either direction over each wire.</p>
+        <p>If you are using a bus, such as SPI, which has a dedicated line for receiving and transmitting then it is possible to use a unidirectional level shifter. A bidirectional level shifting circuit such as this will still work, however.</p>
+      <h1 id="design">Design</h1>
+      <h2 id="schema">Schematic</h2>
+      <div><img class="centre" src="img/Level Shifter Schematic.png" alt="Schematic"></div>
+      <h2 id="equipment">Equipment List</h2>
+        <p>For the circuit (note you will need one copy of it for each line you need to shift):</p>
+        <ul>
+            <li>
+                <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/6714736/">BS170</a> (<a href="http://www.fairchildsemi.com/ds/BS/BS170.pdf">datasheet</a>.): An n-channel enhancement mode MOSFET.</p>
+                <p>Key characteristics are a low gate threshold voltage, and short switching (turn-on/turn-off) time. The maximum gate threshold voltage is 3 V, and it must not be any higher than this when being driven by a 3.3 V logic level device. The switching time is 10 ns, supporting a frequency up to 100 MHz.</p>
+            <li><p>Two 10 kOhm resistors.</p></li>
+        </ul>
+        <p>In addition, if you are planning on following the <a href="#how">construction instructions</a> in this tutorial then you will need the following equipment:</p>
+        <ul>
+            <li><a href="http://proto-pic.co.uk/half-size-breadboard/">Breadboard</a></li>
+            <li><a href="http://proto-pic.co.uk/breadboard-jumper-wire-pack/">Jumper wires</a> for breadboard</li>
+            <li><a href="http://proto-pic.co.uk/adafruit-pi-t-cobbler-breakout-kit-for-raspberry-pi/">Breakout board</a> for Raspberry Pi</li>
+        </ul>
+      <h2 id="descr">Description</h2>
+      <p>The design above is for a <em>single</em> line. I&sup2;C is a two-wire protocol (data and clock), so two copies of the above circuit will be required.</p>
+      <p>It is possible to level shift between voltages other than 3.3 V and 5 V. The <em>lower</em> supply voltage VDD1 must always be connected to the gate of the MOSFET, the lower voltage bus line must be connected to source and the drain to the higher voltage bus line.</p>
+      <p>For a detailed description of how this level shifting circuit operates, see the <a href="http://ics.nxp.com/support/documents/interface/pdf/an97055.pdf">Philips Application Note AN97055</a> where it was first described.</p>
+      <h1 id="how">How to Build It</h1>
+        <p>I will show how to build the circuit using a breadboard: an easy way of prototyping electronics. I would recommend first reading the <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/breadboard/">breadboard tutorial</a> if you have not used one before.</p>
+        <p>The example circuit I will build is a level shifter for an I&sup2;C bus between 3.3 V and 5 V. However, the principles are exactly the same when shifting other voltages, or other buses.</p>
+        <div><a href="img/Bare.jpg"><img class="centre" src="img/Bare Scaled.jpg" alt="Breakout board photo"></a></div>
+        <p>Start by connecting the breakout board. The two rows of pins on the breakout board should go on either side of the central divide on the breadboard. Make sure that the top pin on the breakout board is connected to row 1 of the breakout board. This will make it easier to tell where connections should be made.</p>
+        <p>Connect +3.3 V (row 13) to row 21. Connect row 21 to row 31.</p>
+        <div><a href="img/MOSFET.jpg"><img class="centre" src="img/MOSFET Scaled.jpg" alt="Breakout board with MOSFETs"></a></div>
+        <p>Connect the MOSFETs to rows 20-22 and 30-32. Rows 20, 21 and 22 (and 30, 31 and 32) correspond to source, gate and drain respectively. Connect row 22 to the red rail. Connect row 32 to the blue rail.</p>
+        <div><a href="img/I2C Connected.jpg"><img class="centre" src="img/I2C Connected Scaled.jpg" alt="Breakout board with I2C connected"></a></div>
+        <p>Connect SCL (row 11) to row 30 and SDA (row 12) to row 20. It's not possible to see the connection between SDA and row 20 in the photo &mdash; the red wire covers it! Connect the 10 kOhm resistors between row 20 & row 21, and row 30 & row 31. These are the pull-ups to 3.3 V in the schematic.</p>
+        <div><a href="img/Complete.jpg"><img class="centre" src="img/Complete Scaled.jpg" alt="Breakout board with completed circuit"></a></div>
+        <p>Connect +5 V (row 13, left) to row 35. Connect two 10 kOhm resistors to the red and blue rails. These are the pull-ups to 5 V in the schematic.</p>
+        <p>You've now built the complete circuit! A 5 V shifted version of SDA and SCL are available on the red and blue rails respectively.</p>
+      <h1 id="next">Next Steps</h1>
+      <p>TBC. Link to tutorial on software side (hooking up Pis & Arduinos.)</p>\
+      </div>
+    <hr>
+    <p>&copy; 2013 Adam Gleave</p>
+    <p>All code licensed under the <a href="LICENSE">MIT license</a>.</p>
+    <p>
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
+            <img alt="Creative Commons Licence"
+                 style="border-width:0"
+                 src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png">
+        </a>
+        Tutorial is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
+      
+    </div>
+  </body>
+
+</html>
