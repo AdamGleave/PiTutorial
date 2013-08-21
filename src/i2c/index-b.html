@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <link href="../stylesheet.css" rel="stylesheet" type="text/css"/>
+    <script src="../script.js" type="text/javascript"></script>
+    <title>Using I2C On the Raspberry Pi</title>
+  </head>
+  <body>
+    <div id="main">
+      <p id="abstract">Written by <a href="mailto:adgleave AT gmail DOT com">Adam Gleave</a>.</p>
+
+      <div class="long-tutorial-text">
+      <div class="ucampas-toc"></div>
+      <h1 id="intro">Introduction</h1>
+        <p><a href="http://http://en.wikipedia.org/wiki/I2C">I&sup2;C</a> (or I2C) is a widely used computer bus for attaching low-speed peripherals. It is <em>addressable</em>, avoiding the need for chip select lines necessary for buses. such as <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">SPI</a>. Devices on I&sup2;C operate in either master or slave mode (although it is possible for a device to change its role.) The Raspberry Pi always operates in master mode.</p>
+      <h1 id="connecting">Connecting I&sup2;C devices to the Pi</h1>
+        <p>The I2C bus should be connected to the Pi's <a href="http://pi.gadgetoid.com/pinout/pin3_gpio0">SDA</a> and <a href="http://pi.gadgetoid.com/pinout/pin5_gpio1">SCL</a> pins.
+      <h1 id="setup">Setting up I&sup2;C on the Pi</h1>
+        <p>First install the I&sup2;C development libraries. On Raspbian, or another Debian-based distribution, type:</p>
+        <pre class=sh>
+            $ <kbd>sudo apt-get install libi2c-dev</kbd>
+        </pre>
+        <p>Before I&sup2;C can be used, some kernel modules must be loaded. The easiest way to do this is to use Gordon Henderson's <a href="https://projects.drogon.net/raspberry-pi/wiringpi/the-gpio-utility/">GPIO utility</a>, part of his excellent WiringPi library. Follow the instructions on his web page to download and install <a href="https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/">WiringPi</p>, then type:</p>
+        <pre class=sh> 
+            $ <kbd>gpio load i2c</kbd>
+        </pre>
+        <p>The Pi supports I&sup2;C's <em>fast mode</em> (400 kbit/s) and <em>standard mode</em> (100 kbit/s.) If no speed is specified on the command line, it will default to standard mode. To configure the Pi in fast mode, type:</p>
+        <pre class=sh> 
+            $ <kbd>gpio load i2c 400</kbd>
+        </pre>
+        <p>Now we can test to see if I&sup2;C is working. To see all connected devices, type:</p>
+        <pre class=sh>
+            $ <kbd> i2cetect -y <var>BUSNUM</var>
+        </pre>
+        where BUSNUM is 1 on the revision 2 model B and model A, and 0 on the revision 1 model B. If in doubt, try both!
+      </div>
+    </div>
+  </body>
+
+</html>

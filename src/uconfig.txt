@@ -1,12 +1,8 @@
-copyright_holder="",
-style=ucam2008,
-footadd=('
-<p>All code licensed under the <a href="LICENSE">MIT license</a>.</p>
-<p>
-    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
-        <img alt="Creative Commons Licence"
-             style="border-width:0"
-             src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
-    </a>
-    Tutorial by <span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Adam Gleave</span> is licensed under a  <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
-</p>')
+copyright_holder="Adam Gleave",
+copyright_year="2013",
+style=ucam2008(blue),
+footadd=(*div(style="margin: 0 0 8px 5em",
+*p("All code licensed under the ",*a(href="LICENSE","MIT license")),
+         *p(*a(rel="license",href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB",
+            *img(alt="Creative Commons Licence",style="border-width:0",src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png")),
+            "Tutorial by ",*span(xmlns:cc="http://creativecommons.org/ns#", property="cc:attributionName","Adam Gleave"), " is licensed under a ", *a(rel="license", href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB","Creative Commons Attribution-ShareAlike 3.0 Unported License"))))

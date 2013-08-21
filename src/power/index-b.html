@@ -19,7 +19,7 @@
             <li>Turning power-hungry peripherals off when not in use</li>
             <li>Controlling a <a href="http://makezine.com/2013/06/19/how-to-text-your-coffeemaker/">coffee machine</a></li>
         </ul>
-        <p>This tutorial describes a simple design that  can be used to control a low voltage, moderate current device using one of the Pi's <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/cheat_sheet/">GPIO</a> pins.</p>
+        <p>This tutorial describes a simple design that  can be used to control a low voltage, moderate current device using one of the Pi's <a href="http://pi.gadgetoid.com/pinout">GPIO</a> pins.</p>
       <h1 id="when">When Should You Use This?</h1>
         <p>The design described here can be used in many projects, but occassionally it may not be suitable. In particular:</p>
         <ul>
@@ -37,7 +37,7 @@
       <p>These components are required to implement the circuit:</p>
         <ul>
             <li>
-                <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/5411736/">IRF5305PBF</a> (<a href="http://www.irf.com/product-info/datasheets/data/irf5305pbf.pdf">Datasheet</a>.) A power p-channel MOSFET. Alternatives: <a href="http://uk.rs-online.com/web/p/mosfet-transistors/6504485/">IRLIB9343pbF</a>.</p>
+                <p><a href="http://uk.rs-online.com/web/p/mosfet-transistors/5411736/">IRF5305PBF</a> (<a href="http://www.irf.com/product-info/datasheets/data/irf5305pbf.pdf">datasheet</a>.) A power p-channel MOSFET. Alternatives: <a href="http://uk.rs-online.com/web/p/mosfet-transistors/6504485/">IRLIB9343pbF</a>.</p>
 
                 <p>The key criteria to look for is a low drain-source resistance. This keeps power dissipation low, avoiding the need to mount a heat sink.</p>
 
@@ -46,7 +46,7 @@
                 <p>The recommended transistor has a resistance of only 0.093 Ohm, so it would take over a 10 A current draw to cause a voltage drop of just 0.1 V. It should therefore be able to supply more than enough power for most applications!</p>
             </li>
             <li>
-                <p><a href="http://uk.rs-online.com/web/p/bipolar-transistors/0295905/">2N3704</a> (<a href="www.futurlec.com/Datasheet/Transistor/2N3704.pdf">Datasheet</a>.) A typical NPN amplifier. Alternatives: <a href="http://uk.rs-online.com/web/p/bipolar-transistors/5452232/">BC547</a>. Almost any other NPN BJT transistor should also work.</p>
+                <p><a href="http://uk.rs-online.com/web/p/bipolar-transistors/0295905/">2N3704</a> (<a href="www.futurlec.com/Datasheet/Transistor/2N3704.pdf">datasheet</a>.) A typical NPN amplifier. Alternatives: <a href="http://uk.rs-online.com/web/p/bipolar-transistors/5452232/">BC547</a>. Almost any other NPN BJT transistor should also work.</p>
             </li>
             <li>Two resistors. The exact values are not too important. These are in place to prevent too much current being drawn from the Raspberry Pi, and to enable the NPN transistor to pull the collector down to ground.</li>
         </ul>
