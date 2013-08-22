@@ -12,27 +12,43 @@
       <div class="long-tutorial-text">
       <div class="ucampas-toc"></div>
       <h1 id="intro">Introduction</h1>
-        <p><a href="http://http://en.wikipedia.org/wiki/I2C">I&sup2;C</a> (or I2C) is a widely used computer bus for attaching low-speed peripherals. It is <em>addressable</em>, avoiding the need for chip select lines necessary for buses. such as <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">SPI</a>. Devices on I&sup2;C operate in either master or slave mode (although it is possible for a device to change its role.) The Raspberry Pi always operates in master mode.</p>
+        <p><a href="http://http://en.wikipedia.org/wiki/I2C">I&sup2;C</a> (or I2C) is a widely used computer bus for attaching low-speed peripherals. It is <em>addressable</em>, avoiding the need for chip select lines required on buses such as <a href="http://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">SPI</a>. Devices on I&sup2;C operate in either master or slave mode (although it is possible for a device to change its role.) The Raspberry Pi always operates in master mode.</p>
       <h1 id="connecting">Connecting I&sup2;C devices to the Pi</h1>
-        <p>The I2C bus should be connected to the Pi's <a href="http://pi.gadgetoid.com/pinout/pin3_gpio0">SDA</a> and <a href="http://pi.gadgetoid.com/pinout/pin5_gpio1">SCL</a> pins.
+        <p>The I2C bus should be connected to the Pi's <a href="http://pi.gadgetoid.com/pinout/pin3_gpio0">SDA</a> and <a href="http://pi.gadgetoid.com/pinout/pin5_gpio1">SCL</a> pins. It is also important to ensure that all devices share a common ground. This can be done by connecting ground on the peripheral device to one of the Pi's <a href="http://pi.gadgetoid.com/pinout/pin9_ground">ground pins</a>.</p>
+        <div class="normal alert">
+            <h2>Ground Loops</h2>
+            <p>Ground is supposed to be at the same potential everywhere in an electrical system. This is not always the case, however, and two electrical devices may be connected to grounds at different potentials. In this case, connecting their grounds together causes a <em>ground loop</em>. A current flows from the 'ground' at a higher potential to the 'ground' at a lower potential. This can disrupt signal transmission (causing I&sup2;C to fail.) Very rarely, the potential difference can be high enough to even be dangerous!</p>
+            <p>A simple way to avoid this problem is to ensure that all electrical devices connected together are plugged into the same power outlet. The power plug contains a grounding pin, so all devices will automatically share a common ground.</p>
+            <p>An even better option is to power all the devices directly from the Pi. This is the technique used in the example below. However, this is not possible for devices which use a large current.</p>
+        </div>
+        <p>It is possible to connect I&sup2;C devices directly to the Pi using jumper leads. However, this is impractical when connecting multiple devices. A simple and more scalable alternative is to use a breadboard to provide a line which peripherals can easily be connected to and removed from. I would recommend first reading the <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/breadboard/">breadboard tutorial</a> if you have not used one before.</p>
+       <div><a href="img/Breadboard.JPG"><img class="centre" src="img/Breadboard Scaled.JPG" alt="Breakout board photo"></a></div>
+       <p>Start by connecting the breakout board. The two rows of pins on the breakout board should go on either side of the central divide on the breadboard. Make sure that the top pin on the breakout board is connected to row 1 of the breakout board. This will make it easier to tell where connections should be made.</p>
+        <p>Connect GND (pin 11, left) to the negative (blue, in the picture) rail running along the breakout board on the left. Connect +5 V (pin 13, left) to the positive (red, in the picture) left rail. These two rails will be used to power peripheral devices.</p>
+        <p>A voltage converter can be used if peripheral devices run on a different voltage to +5 V. It's also possible to use the +3.3 V power rail (pin 13, right), which is fed from an on-board converter on the Pi. However, the current draw of this is limited to just <a href="http://pi.gadgetoid.com/pinout/pin1_3v3_power">50 mA</a>.</p>
+        <p>Connect SCL (pin 11, right) to the negative right rail, and SDA (pin 12, right) to the positive right rail. Of course these are data lines, so neither are negative or positive. It is completely valid to connect them the other way round, provided you're consistent!</p>
+        <p>Now any I&sup2;C devices can simply be connected onto the right rails. This easily allows for connection of many devices.</p>
       <h1 id="setup">Setting up I&sup2;C on the Pi</h1>
         <p>First install the I&sup2;C development libraries. On Raspbian, or another Debian-based distribution, type:</p>
-        <pre class=sh>
-            $ <kbd>sudo apt-get install libi2c-dev</kbd>
-        </pre>
-        <p>Before I&sup2;C can be used, some kernel modules must be loaded. The easiest way to do this is to use Gordon Henderson's <a href="https://projects.drogon.net/raspberry-pi/wiringpi/the-gpio-utility/">GPIO utility</a>, part of his excellent WiringPi library. Follow the instructions on his web page to download and install <a href="https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/">WiringPi</p>, then type:</p>
-        <pre class=sh> 
-            $ <kbd>gpio load i2c</kbd>
-        </pre>
+        <pre class=sh>$ <kbd>sudo apt-get install libi2c-dev</kbd></pre>
+        <p>Before I&sup2;C can be used, some kernel modules must be loaded. The easiest way to do this is to use Gordon Henderson's <a href="https://projects.drogon.net/raspberry-pi/wiringpi/the-gpio-utility/">GPIO utility</a>, part of his excellent WiringPi library. Follow the instructions on his web page to download and install <a href="https://projects.drogon.net/raspberry-pi/wiringpi/download-and-install/">WiringPi</a>. When finished, type:</p>
+        <pre class=sh>$ <kbd>gpio load i2c</kbd></pre>
         <p>The Pi supports I&sup2;C's <em>fast mode</em> (400 kbit/s) and <em>standard mode</em> (100 kbit/s.) If no speed is specified on the command line, it will default to standard mode. To configure the Pi in fast mode, type:</p>
-        <pre class=sh> 
-            $ <kbd>gpio load i2c 400</kbd>
-        </pre>
+        <pre class=sh>$ <kbd>gpio load i2c 400</kbd></pre>
         <p>Now we can test to see if I&sup2;C is working. To see all connected devices, type:</p>
-        <pre class=sh>
-            $ <kbd> i2cetect -y <var>BUSNUM</var>
-        </pre>
-        where BUSNUM is 1 on the revision 2 model B and model A, and 0 on the revision 1 model B. If in doubt, try both!
+<pre class=sh>
+$ <kbd> i2cdetect -y <var>BUSNUM</var></kbd>
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- 2a -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+70: -- -- -- -- -- -- -- -- 
+</pre>
+        <p>where BUSNUM is 1 on the revision 2 model B and model A, and 0 on the revision 1 model B. (If in doubt, try both!) Here you can see a device with address 2a in hex (42 in decimal) is connected to the bus.</p>
       </div>
     </div>
   </body>

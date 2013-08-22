@@ -21,7 +21,7 @@
         </ul>
         <p>This tutorial describes a simple design that  can be used to control a low voltage, moderate current device using one of the Pi's <a href="http://pi.gadgetoid.com/pinout">GPIO</a> pins.</p>
       <h1 id="when">When Should You Use This?</h1>
-        <p>The design described here can be used in many projects, but occassionally it may not be suitable. In particular:</p>
+        <p>The design described here can be used in many projects, but occasionally it may not be suitable. In particular:</p>
         <ul>
         <li><p>It <strong>must not</strong> be used to control high voltages, such as mains electricity. It is possible to modify the design to cover this case, but this should only be undertaken by those with considerable experience, as it involves working with potentially <strong>lethal</strong> voltages. I would recommend using a device such as the <a href="http://www.powerswitchtail.com/Pages/PSTKKit.aspx">PowerSwitch Tail</a> if you need to work with mains voltages.</p></li>
         <li><p>If you need to control a DC motor, then it is often better to use <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/robot_control/">servos</a>, which provide a finer degree of control.</p></li>
@@ -30,8 +30,9 @@
       <p>Otherwise, read on, and learn how to make the circuit!</p>
       <h1 id="design">Design</h1>
       <h2 id="schema">Schematic</h2>
-      <div>
+      <div style="margin: 0 auto; text-align: center; overflow: hidden">
         <img class="centre" src="img/Power Control Schematic.png" alt="Schematic">
+        <p>With thanks to Kees van Beek (Delft University of Technology) and Brian Jones (University of Cambridge)</p>
       </div>
       <h2 id="equipment">Equipment List</h2>
       <p>These components are required to implement the circuit:</p>
@@ -69,7 +70,7 @@
         <p>Connect GND (pin 11) to the negative (blue, in the picture) rail running along the breakout board.</p>
         <div><a href="img/Components Labeled.jpg"><img class="centre" src="img/Components Only Scaled.jpg" alt="Breakout board with Components"></a></div>
         <p>Connect the NPN transistor and MOSFET. <strong>Be careful</strong> to get the orientation the same as in the picture. The flat edge of the NPN transistor should face the edge of the breakout board. The metal edge of the MOSFET should face the central divide of the breakout board. It is possible to put the components in facing the opposite way round, but then the pinout will be reversed.</p>
-        <p>I have connected the NPN transistor to rows 25-27, and the MOSFET to rows 35-37. The emittter, collector and base of the NPN amplifier are connected to rows 25, 26 and 27 respectively. The gate, drain and source are connected to rows 35, 36 and 37 respectively.</p>
+        <p>I have connected the NPN transistor to rows 25-27, and the MOSFET to rows 35-37. The emitter, collector and base of the NPN amplifier are connected to rows 25, 26 and 27 respectively. The gate, drain and source are connected to rows 35, 36 and 37 respectively.</p>
         <p>The drain of the MOSFET is the output of the circuit, which I have connected to the positive (red, in the picture) rail running along the breakout board.</p>
         <div><a href="img/NPN Only.jpg"><img class="centre" src="img/NPN Only Scaled.jpg" alt="Breakout board with connections for NPN Transistor"></a></div>
         <p>Connect the 100 kOhm resistor between the supply voltage and the collector (row 26) of the NPN transistor. Here I am using the Pi's built-in 5 V supply rail (row 13), which is connected directly to the Pi's power supply.</p>
@@ -88,7 +89,7 @@ $ <kbd>echo "7" > /sys/class/gpio/export</kbd>
 $ <kbd>echo "out" > /sys/class/gpio/gpio7/direction</kbd>
 $ <kbd>echo "0" > /sys/class/gpio/gpio7/value</kbd>
 </pre>
-        <p>The first line changes the user to root, the administrative user. This is required for the following commands to work. The second line tells the Pi we will be using pin #7, and that it should be made accessible by the filesystem. (If you're using a different GPIO pin, change 7 to the appropriate number.) The third line configures the pin as an output rather than input pin. The last line sets the output to low (0 V), turning <em>off</em> power.</p>
+        <p>The first line changes the user to root, the administrative user. This is required for the following commands to work. The second line tells the Pi we will be using pin #7, and that it should be made accessible by the file system. (If you're using a different GPIO pin, change 7 to the appropriate number.) The third line configures the pin as an output rather than input pin. The last line sets the output to low (0 V), turning <em>off</em> power.</p>
     <div><a href="img/Multimeter Off.jpg"><img class="centre" src="img/Multimeter Scaled.jpg" alt="Multimeter testing circuit"></a></div>
      <p>Connect the black lead of the multimeter to the ground line (the blue, negative line on my breadboard.) Connect the red lead of the multimeter to the power line (the red, positive line in this example.) Turn the multimeter on, measuring voltage. It should read 0 V.</p>
       <p>Now, type:</p>
@@ -101,17 +102,6 @@ $ <kbd>echo "1" > /sys/class/gpio/gpio7/value</kbd>
     <p>Now the circuit is working, it is possible to control the power to a variety of different devices. As a simple example, try connecting LEDs (you may need a resistor to lower the voltage).</p>
     <p>In the above example, we controlled the GPIO pin from a terminal using the <em>shell</em>. You may wish to control the pin (and therefore the power) from a programming language, instead. There are many tutorials online; here is one for <a href="http://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/robot/cheat_sheet/">Python</a> and for <a href="https://projects.drogon.net/raspberry-pi/wiringpi/">C</a>.</p>
     <p>Good luck!</p>
-    <hr>
-    <p>&copy; 2013 Adam Gleave</p>
-    <p>All code licensed under the <a href="LICENSE">MIT license</a>.</p>
-    <p>
-        <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">
-            <img alt="Creative Commons Licence"
-                 style="border-width:0"
-                 src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png">
-        </a>
-        Tutorial is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
-      
     </div>
   </body>
 </html>
