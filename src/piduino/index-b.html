@@ -1,0 +1,100 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <link href="../stylesheet.css" rel="stylesheet" type="text/css"/>
+    <script src="../script.js" type="text/javascript"></script>
+    <title>Building a Piduino Lab: Raspberry Pi and Arduino Communication over I2C</title>
+  </head>
+  <body>
+    <div id="main">
+      <p id="abstract">Written by <a href="mailto:adgleave AT gmail DOT com">Adam Gleave</a>.</p>
+
+      <div class="long-tutorial-text">
+      <div class="ucampas-toc"></div>
+      <h1 id="intro">Introduction</h1>
+      <p>Arduino's and Raspberry Pi's are in many ways complimentary technologies. Both have a large maker community, and are rooted in open source technology.</p>
+      <p>The Arduino excels as a dedicated processor, performing a single task. The Arduino's wide variety of low-level analogue and digital input and output has enabled its use in many physical computing projects.</p>
+      <p>By contrast, the Raspberry Pi has orders of magnitude more processing power than Arduino's. However, it's multi-tasking nature limits its use in real-time applications, and may be overkill in some simple situations. The Pi has a greater variety of high-level IO capabilities, such as Ethernet and HDMI, enabling it to be used more like an ordinary computer. However, the Pi lacks any analogue input, and has limited analogue output (in the form of a sound card.)</p>
+       <p>Using the Pi and Arduino together can provide the best of both devices, extending the range of projects which can be attempted. We will focus on interconnecting the Pi and Arduino over the I&sup2;C (or I2C) bus, a widely supported standard.</p>
+      <h1 id="setup">Setting up I&sup2;C</h1>
+      <p><a href="img/Complete Setup.JPG"><img src="img/Complete Setup Scaled.JPG" alt="Arduino, Pi connected via breadboard"></a></p>
+      <p>The hardware setup is covered in several sub-tutorials:</p>
+      <ul>
+        <li><a href="../power/index.html">Power Control</a>: It is possible to control from software whether the Arduino's are turned on or off. This can be useful for prototyping, as the Arduino's may be automatically power cycled if an error occurs over the I&sup2;C bus. This is an optional feature, however, and is not required.</li>
+        <li><a href="../levels/index.html">Level Shifting</a>: The Pi operates at +3.3 V logic levels, whilst the Arduino operates at +5 V. It is therefore necessary to build a level shifting circuit for I&sup2;C to enable the devices to communicate. Some people have <a href="http://playground.arduino.cc/Main/I2CBi-directionalLevelShifter">reported success</a> without level shifting. However, this involves operating both the Arduino and Pi outside of their specifications, so is not a recommended configuration. In particular, the +5 V output from the Arduino could damage the Pi.</li>
+        <li><a href="../i2c/index.html">I2C Tutorial</a>: This explains the basics of the I&sup2;C protocol, and how to configure it on the Pi. <em>Note:</em> if you use a breadboard to produce a breakout of the I&sup2;C bus, as described in the tutorial, then the output of the level shifting circuit should be connected to the rails, not the SDA and SCL pins directly.</li>
+      </ul>
+      <p>A complete circuit (including the power control and level shifting circuit), with an Arduino attached, is pictured for illustration.</p>
+      <p>The above tutorials are enough to get I&sup2;C communication entirely up and running. If you feel comfortable programming the Raspberry Pi to be an I&sup2;C master and the Arduino's to be slaves, then you can stop reading! Otherwise, you may find it helpful to adapt the code I have produced below.</p>
+      <h1 id="using">Using I&sup2;C</h1>
+          <p>Example code for <a href="http://github.com/AdamGleave/ArduinoPiI2C">Arduino and Pi I2C</a> communication is available on GitHub for download as a <a href="http://github.com/AdamGleave/ArduinoPiI2C/archive/master.zip">ZIP file</a>.</p>
+          <p>The code for the Raspberry Pi configures it as an I&sup2;C master. It then periodically:</p>
+          <ul>
+            <li>Scans for slaves connected on the bus</li>
+            <li>For each slave detected, sends "?" to request a list of variables that can be retrieved</li>
+            <li>For each slave, sends the name of each variable to request its value.</li>
+            <li>Displays in the console all values received, and logs (in a <a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> format) to a file.</li>  
+          </ul>        
+         <p>The code for the Arduino configures it as a slave. There is a configuration option to specify the address, which <strong>must be unique</strong>. There are also configuration options to specify the variables to publish.</p>
+      <h2 id="rpisoftware">Raspberry Pi</h2>
+          <p>First download and extract the software by typing in a terminal:</p>
+<pre class=sh>
+$ <kbd>wget http://github.com/AdamGleave/ArduinoPiI2C/archive/master.zip</kbd>
+$ <kbd>unzip master.zip</kbd>
+</pre>
+          <p>Note you may see a slightly different output to the example above, depending on what other files you have. The software should be extracted into a directory called "ArduinoPiI2C-Master". You can confirm this by typing:</p>
+<pre class=sh>
+$ <kbd>ls</kbd>
+ArduinoPiI2C-master  Desktop  master.zip  ocr_pi.png  Pi  python_games  test  wiringPi
+</pre>
+          <p>The code for the Raspberry Pi is stored in the subdirectory ArduinoPiI2C-master/Pi:</p>
+<pre class=sh>
+$ <kbd>cd ArduinoPiI2C-master/Pi/</kbd>
+$ <kbd>ls</kbd>
+config.yaml  i2cpoll.py
+</pre>
+        <p>There are a number of configuration options stored in config.yaml. This file includes comments explaining the meaning of each parameter. The defaults should be suitable for most applications, however it may be necessary to change two parameters:</p>
+        <ul>
+             <li>enabled in section powerCtl. The default is to enable power cycling when there is an error on the I&sup2;C bus. This should be changed to false if you have not built the power control circuit.</li>
+             <li>pin in section powerCtl. The default is <a href="http://pi.gadgetoid.com/pinout/pin26_gpio7">BCM pin 7</a>. You will need to change it if you use a different pin to the one used in the power control tutorial. If you have disabled power control, there is no need to change it.</li> 
+            <li>device-id in section i2c. The default is correct for the Raspberry Pi Model B revision 2 and Raspberry Pi Model A, but must be changed to 0 on the Raspberry Pi Model B revision 1.</li>
+        </ul>
+        <p>Once you have changed these, and any other options you want, you are ready to run the program. It requires a library called PyYAML to read the configuration file. This can be installed on Raspbian by typing:</p>
+<pre class=sh>
+$ <kbd>sudo apt-get install python-setuptools</kbd>
+$ <kbd>sudo easy_install pip</kbd>
+$ <kbd>sudo pip install pyyaml</kbd>
+</pre>
+        <p>Now run the program by typing:</p>
+<pre class=sh>
+$ <kbd>cd ArduinoPiI2C-master/Pi/</kbd>
+$ <kbd>sudo python i2cpoll.py</kbd>
+</pre>
+        <p>This will output to the console a few messages briefly describing the startup. On my system, with one Arduino connected, I see:</p>
+<pre class=sh>
+Opened I2C bus #1
+I will list all connected I2C devices and attached sensors, and tell you whenever this changes.
+
+*****
+Address 42: Device connected, with sensors: SENSOR1	SENSOR2
+
+Address 42: SENSOR1 = 1934.00000 SENSOR2 = Running for >1 s 
+</pre>
+        <p>The program will continue to scan for new devices, and poll all detected devices. All values read will be logged to a file called Sensors.csv. For example, the log after letting the program run for around half a minute is:</p>
+<pre class=sh>
+$ <kbd>cat Sensors.csv</kbd>
+2013-08-22T13:35:36.693525+00:00,SENSOR1,1934.00000
+2013-08-22T13:35:36.693525+00:00,SENSOR2,Running for >1 s
+2013-08-22T13:35:46.748915+00:00,SENSOR1,11743.00000
+2013-08-22T13:35:46.748915+00:00,SENSOR2,Running for >1 s
+2013-08-22T13:35:56.813942+00:00,SENSOR1,21554.00000
+2013-08-22T13:35:56.813942+00:00,SENSOR2,Running for >1 s
+2013-08-22T13:36:06.878950+00:00,SENSOR1,31359.00000
+</pre>
+        <p>To stop the program, type <samp><kbd>Ctrl-C</kbd></samp>.</p>
+      <h2 id="arduinosoftware">Arduino</h2>
+      <p>TBC - by Rolf</p>
+      </div>
+    </div>
+  </body>
+</html>
