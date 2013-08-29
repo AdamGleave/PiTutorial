@@ -93,7 +93,31 @@ $ <kbd>cat Sensors.csv</kbd>
 </pre>
         <p>To stop the program, type <samp><kbd>Ctrl-C</kbd></samp>.</p>
       <h2 id="arduinosoftware">Arduino</h2>
-      <p>TBC - by Rolf</p>
+        <p>Download the code from <a href="http://github.com/AdamGleave/ArduinoPiI2C/archive/master.zip">GitHub</a>. Extract the ZIP file, and open the file <samp>Arduino/Arduino.ino</samp> in the <a href="http://arduino.cc/">Arduino</a> IDE. <img src="img/Arduino Opened.png" alt="Screenshot of Arduino IDE"></p>
+        <p>You should paste your code in the first section (displayed above). Rename setup and loop to your_setup and your_loop.</p>
+        <p>your_setup should <strong>not</strong> include any code initialising serial output (e.g. a <samp>Serial.begin</samp> call), or any setup related to I&sup2;C. This is handled in the function setup, which is called before your_setup. You can still use serial functions, such as <samp>Serial.println</samp>, as usual.</p>
+        <p>For each value you wish to make available via I&sup2;C, your_loop needs to update the value of a global variable: of type <samp>float</samp>, <samp>int</samp>, or <samp>char *</samp> (string).</p>
+        <div class="normal alert">
+            <h2>Exporting Strings</h2>
+            <p>There is a slight subtlety with making a string available over I&sup2;C. If you're only interested in exporting numeric values (<samp>float</samp>'s and <samp>int</samp>'s), this can be safely ignored!</p>
+            <p>Responding to requests from the Pi is <em>interrupt driven</em>. <samp>your_loop</samp> can stop executing at any time, with control transferred to the I&sup2;C-handling code <samp>requestEvent()</samp>. This code will send the value of the variable requested, and does not know if <samp>your_loop()</samp> has finished updating the value or not.</p>
+            <p>Floating point and integer variables update <em>atomically</em>. That is, assigning a new value to a variable has either completed, or not started. Modifying a character array, however, is not atomic. When an update is interrupted it is possible for, say, only the first half of the character array had been updated.</p>
+            <p>The simplest way to avoid this is to always use constant strings, as in the example code. If this is not possible for your application, then an alternative is to use <samp>malloc()</samp> to allocate new memory for your character array. Modify this new character array, <em>without</em> changing the value of the global variable. When the update has finished, modify the value of the global variable to point to the new character array. Then call <samp>free()</samp> on the old character array. (A similar approach is possible using two statically allocated character arrays.)</p>
+        </div>
+        <p>Once you have finished modifying your code, the only thing left is to modify the configuration. Scroll down to the section marked <samp>CONFIGURATION</samp>. Find the line, <samp>#define I2C_ADDRESS 42</samp>. Change 42 to any address between 8 and 119, <em>not</em> used by any other I&sup2;C device connected.</p>
+        <p>Finally, configure your variables by modifying the list <samp>sensor sensors[]</samp>:</p>
+        <!-- Bit of an abuse of sh class! But <code></code> isn't defined in style sheet. -->
+        <pre class=sh>
+sensor sensors[] = {
+                      {"SENSOR1", FLOAT, &sensorVal1},
+                      {"SENSOR2", STRING, &sensorVal2},
+                      //{"SENSOR3", FLOAT, &sensorVal3},
+                      //{"SENSOR4", FLOAT, &sensorVal4},
+                      //{"SENSOR5", STRING, &sensorVal5},
+                    };
+        </pre>
+        <p>The comments above the list give a detailed explanation of the format. </p>
+        <p>Once you have completed the configuration, compile the code and send it to the Arduino. It should be automatically detected by the software running on the Pi, once it is connected.</p>
       </div>
     </div>
   </body>
