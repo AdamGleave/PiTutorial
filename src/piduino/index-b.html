@@ -7,20 +7,18 @@
   </head>
   <body>
     <div id="main">
-      <p id="abstract">Written by <a href="mailto:adgleave AT gmail DOT com">Adam Gleave</a>.</p>
-
       <div class="long-tutorial-text">
       <div class="ucampas-toc"></div>
       <h1 id="intro">Introduction</h1>
-      <p>Arduino's and Raspberry Pi's are in many ways complimentary technologies. Both have a large maker community, and are rooted in open source technology.</p>
+      <p>Arduinos and Raspberry Pis are in many ways complimentary technologies. Both have a large maker community, and are rooted in open source technology.</p>
       <p>The Arduino excels as a dedicated processor, performing a single task. The Arduino's wide variety of low-level analogue and digital input and output has enabled its use in many physical computing projects.</p>
-      <p>By contrast, the Raspberry Pi has orders of magnitude more processing power than Arduino's. However, it's multi-tasking nature limits its use in real-time applications, and may be overkill in some simple situations. The Pi has a greater variety of high-level IO capabilities, such as Ethernet and HDMI, enabling it to be used more like an ordinary computer. However, the Pi lacks any analogue input, and has limited analogue output (in the form of a sound card.)</p>
+      <p>By contrast, the Raspberry Pi has orders of magnitude more processing power than an Arduino. However, it's multi-tasking nature limits its use in real-time applications, and may be overkill in some simple situations. The Pi has a greater variety of high-level IO capabilities, such as Ethernet and HDMI, enabling it to be used more like an ordinary computer. However, the Pi lacks any analogue input, and has limited analogue output (in the form of a sound card.)</p>
        <p>Using the Pi and Arduino together can provide the best of both devices, extending the range of projects which can be attempted. We will focus on interconnecting the Pi and Arduino over the I&sup2;C (or I2C) bus, a widely supported standard.</p>
       <h1 id="setup">Setting up I&sup2;C</h1>
       <p><a href="img/Complete Setup.JPG"><img src="img/Complete Setup Scaled.JPG" alt="Arduino, Pi connected via breadboard"></a></p>
       <p>The hardware setup is covered in several sub-tutorials:</p>
       <ul>
-        <li><a href="../power/index.html">Power Control</a>: It is possible to control from software whether the Arduino's are turned on or off. This can be useful for prototyping, as the Arduino's may be automatically power cycled if an error occurs over the I&sup2;C bus. This is an optional feature, however, and is not required.</li>
+        <li><a href="../power/index.html">Power Control</a>: It is possible to control from software whether the Arduinos are turned on or off. This can be useful for prototyping, as the Arduinos may be automatically power cycled if an error occurs over the I&sup2;C bus. This is an optional feature, however, and is not required.</li>
         <li><a href="../levels/index.html">Level Shifting</a>: The Pi operates at +3.3 V logic levels, whilst the Arduino operates at +5 V. It is therefore necessary to build a level shifting circuit for I&sup2;C to enable the devices to communicate. Some people have <a href="http://playground.arduino.cc/Main/I2CBi-directionalLevelShifter">reported success</a> without level shifting. However, this involves operating both the Arduino and Pi outside of their specifications, so is not a recommended configuration. In particular, the +5 V output from the Arduino could damage the Pi.</li>
         <li><a href="../i2c/index.html">I2C Tutorial</a>: This explains the basics of the I&sup2;C protocol, and how to configure it on the Pi. <em>Note:</em> if you use a breadboard to produce a breakout of the I&sup2;C bus, as described in the tutorial, then the output of the level shifting circuit should be connected to the rails, not the SDA and SCL pins directly.</li>
       </ul>

@@ -3,16 +3,17 @@
   <head>
     <link href="../stylesheet.css" rel="stylesheet" type="text/css"/>
     <script src="../script.js" type="text/javascript"></script>
-    <title>TITLE</title>
+    <title>Fun using I2C: Interacting with the Digital World</title>
   </head>
   <body>
     <div id="main">
-      <p id="abstract">Written by <a href="mailto:adgleave AT gmail DOT com">Adam Gleave</a>.</p>
-
       <div class="long-tutorial-text">
       <div class="ucampas-toc"></div>
-         CONTENT
-      </div>
+        <p>I&sup2;C lets you vastly extend the Pi's capabilities, by connecting a variety of other devices. Examples include <a href="http://www.adafruit.com/products/992">temperature sensors</a>, <a href="http://www.adafruit.com/products/716">LCD displays</a> and <a href="http://www.adafruit.com/products/1083">Analogue to Digital Converters</a>.</p>
+        <p>The first tutorial, <a href="i2c/">Using I2C On The Raspberry Pi</a>, explains how to configure the hardware and software of the Pi to get I&sup2;C up and running. If you already know what you want to do with I&sup2;C, then this is an ideal place to start.</p>
+        <p>You may find that some or all of the devices you want to connect use a different voltage for communication than the Pi (so called <em>logic levels</em>.) In this case, first build a <em>bidirectional level shifter</em> to convert the voltages, which is described in the <a href="levels/">second tutorial</a>.</p>
+        <p>If you're stuck for ideas, then why not read about using I&sup2;C to <a href="piduino/">interconnect Arduinos</a> with the Raspberry Pi? This gives you the variety of low-level I/O options and dedicated processing of a microcontroller, coupled with all the flexibility and processing speed of the Raspberry Pi.</p>
+        <p>Not only can you communicate with other devices using I&sup2;C, it's also possible to turn them on and off with a simple circuit, described in the <a href="power/">fourth tutorial</a>. For example, this could be used to turn devices off when not in use, saving power.</p>
     </div>
   </body>
 

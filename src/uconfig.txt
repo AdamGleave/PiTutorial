@@ -5,6 +5,6 @@ footadd=(*div(style="margin: 0 0 8px 5em",
 *p("All code licensed under the ",*a(href="LICENSE","MIT license")),
          *p(*a(rel="license",href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB",
             *img(alt="Creative Commons Licence",style="border-width:0",src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png")),
-            "Tutorial by ",*span(xmlns:cc="http://creativecommons.org/ns#", property="cc:attributionName","Adam Gleave"), " is licensed under a ", *a(rel="license", href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB","Creative Commons Attribution-ShareAlike 3.0 Unported License")))),
+            "Tutorial by ",*a(href="mailto:arg58 AT cam DOT ac DOT uk",*span(xmlns:cc="http://creativecommons.org/ns#", property="cc:attributionName","Adam Gleave")), " is licensed under a ", *a(rel="license", href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_GB","Creative Commons Attribution-ShareAlike 3.0 Unported License")))),
 navbar=1,
-piduino,i2c,levels,power
+i2c,levels,piduino,power
